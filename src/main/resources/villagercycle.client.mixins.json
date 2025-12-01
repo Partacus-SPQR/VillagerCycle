@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "com.villagercycle.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [],
+	"client": [
+		"MerchantScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"refmap": "villager-cycle-refmap.json"
+}
