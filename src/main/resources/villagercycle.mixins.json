@@ -1,14 +1,15 @@
 {
-	"required": true,
-	"package": "com.villagercycle.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"MerchantScreenHandlerAccessor"
-	],
-	"client": [],
-	"server": [],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"refmap": "villager-cycle-refmap.json"
+        "required": true,
+        "package": "com.villagercycle.mixin",
+        "compatibilityLevel": "JAVA_21",
+        "mixins": [
+                "MerchantScreenHandlerAccessor",
+                "MerchantEntityAccessor"
+        ],
+        "client": [],
+        "server": [],
+        "injectors": {
+                "defaultRequire": 1
+        },
+        "refmap": "villager-cycle-refmap.json"
 }

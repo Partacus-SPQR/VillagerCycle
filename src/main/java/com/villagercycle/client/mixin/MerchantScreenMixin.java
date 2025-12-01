@@ -1,5 +1,6 @@
 package com.villagercycle.client.mixin;
 
+import com.villagercycle.config.VillagerCycleConfig;
 import com.villagercycle.network.CycleTradePayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -22,11 +23,18 @@ public abstract class MerchantScreenMixin extends HandledScreen<MerchantScreenHa
 	
 	@Inject(method = "init", at = @At("TAIL"))
 	private void addCycleTradeButton(CallbackInfo ci) {
-		// Position button ABOVE the GUI window, outside the GUI frame
-		int buttonX = this.x + 6;
-		int buttonY = this.y - 25;  // NEGATIVE offset to place ABOVE the window
-		int buttonWidth = 100;
-		int buttonHeight = 20;
+		VillagerCycleConfig config = VillagerCycleConfig.getInstance();
+		
+		// Check if button is enabled in config
+		if (!config.enableCycleButton) {
+			return;
+		}
+		
+		// Use config values for button position and size
+		int buttonX = this.x + config.buttonOffsetX;
+		int buttonY = this.y + config.buttonOffsetY;
+		int buttonWidth = config.buttonWidth;
+		int buttonHeight = config.buttonHeight;
 		
 		ButtonWidget cycleButton = ButtonWidget.builder(
 			Text.literal("🔄 Cycle Trades").formatted(Formatting.YELLOW),

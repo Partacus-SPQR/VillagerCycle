@@ -1,11 +1,13 @@
 package com.villagercycle;
 
+import com.villagercycle.config.VillagerCycleConfig;
 import com.villagercycle.mixin.MerchantScreenHandlerAccessor;
 import com.villagercycle.network.CycleTradePayload;
 import com.villagercycle.util.VillagerTradeUtil;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.network.packet.s2c.play.SetTradeOffersS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -24,6 +26,9 @@ public class VillagerCycleMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initializing Villager Cycle Mod");
+		
+		// Load config
+		VillagerCycleConfig.load();
 		
 		// Register network packet
 		PayloadTypeRegistry.playC2S().register(CycleTradePayload.ID, CycleTradePayload.CODEC);
@@ -51,9 +56,36 @@ public class VillagerCycleMod implements ModInitializer {
 				
 				LOGGER.info("Merchant found: {}", merchant.getClass().getName());
 				
+				VillagerCycleConfig config = VillagerCycleConfig.getInstance();
+				
+				// Handle wandering traders based on config
+				if (merchant instanceof MerchantEntity && !config.allowWanderingTraders) {
+					VillagerTradeUtil.sendCannotCycleMessage(player, "Wandering traders are not supported. Enable in config if desired.");
+					return;
+				}
+				
 				if (!(merchant instanceof VillagerEntity)) {
+					if (merchant instanceof MerchantEntity && config.allowWanderingTraders) {
+						// Handle wandering trader if enabled
+						MerchantEntity wanderingTrader = (MerchantEntity) merchant;
+						boolean success = VillagerTradeUtil.cycleWanderingTraderTrades(wanderingTrader, player);
+						if (success) {
+							player.networkHandler.sendPacket(new SetTradeOffersS2CPacket(
+								merchantHandler.syncId,
+								wanderingTrader.getOffers(),
+								1,
+								0,
+								false,
+								false
+							));
+							LOGGER.info("Successfully cycled wandering trader trades and updated client GUI");
+						} else {
+							VillagerTradeUtil.sendCannotCycleMessage(player, "Unable to cycle trades at this time.");
+						}
+						return;
+					}
 					LOGGER.info("Merchant is not a VillagerEntity");
-					return; // Not a villager (could be wandering trader)
+					return;
 				}
 				
 				VillagerEntity villager = (VillagerEntity) merchant;

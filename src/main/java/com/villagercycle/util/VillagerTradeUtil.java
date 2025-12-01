@@ -1,6 +1,7 @@
 package com.villagercycle.util;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -68,6 +69,29 @@ public class VillagerTradeUtil {
 		);
 		player.sendMessage(
 			Text.literal("🔄 The villager now has new Level 1 trades.")
+				.formatted(Formatting.YELLOW),
+			false
+		);
+		
+		return true;
+	}
+	
+	public static boolean cycleWanderingTraderTrades(MerchantEntity trader, ServerPlayerEntity player) {
+		// Use accessor to regenerate trades
+		com.villagercycle.mixin.MerchantEntityAccessor accessor = (com.villagercycle.mixin.MerchantEntityAccessor) trader;
+		
+		// Clear offers and regenerate
+		trader.getOffers().clear();
+		accessor.invokeFillRecipes();
+		
+		// Send success message
+		player.sendMessage(
+			Text.literal("✅ Wandering trader offers have been refreshed!")
+				.formatted(Formatting.GREEN, Formatting.BOLD),
+			false
+		);
+		player.sendMessage(
+			Text.literal("🔄 The trader now has new offers.")
 				.formatted(Formatting.YELLOW),
 			false
 		);
