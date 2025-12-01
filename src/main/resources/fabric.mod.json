@@ -1,38 +1,45 @@
-{
-	"schemaVersion": 1,
-	"id": "villagercycle",
-	"version": "${version}",
-	"name": "Villager Cycle",
-	"description": "Easily refresh villager trades with a single click! Adds a cycle button to villager trading screens that allows you to regenerate Level 1 trades before trading with them.",
-	"authors": [
-		"Partacus-SPQR"
-	],
-	"contact": {
-		"homepage": "https://github.com/Partacus-SPQR/VillagerCycle",
-		"sources": "https://github.com/Partacus-SPQR/VillagerCycle"
-	},
-	"license": "MIT",
-	"icon": "assets/villagercycle/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.villagercycle.VillagerCycleMod"
-		],
-		"client": [
-			"com.villagercycle.client.VillagerCycleClient"
-		]
-	},
-	"mixins": [
-		"villagercycle.mixins.json",
-		{
-			"config": "villagercycle.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.16.9",
-		"minecraft": "~1.21.10",
-		"java": ">=21",
-		"fabric-api": "*"
-	}
+﻿{
+        "schemaVersion": 1,
+        "id": "villagercycle",
+        "version": "${version}",
+        "name": "Villager Cycle",
+        "description": "Easily refresh villager trades with a single click! Adds a cycle button to villager trading screens that allows you to regenerate Level 1 trades before trading with them.",
+        "authors": [
+                "Partacus-SPQR"
+        ],
+        "contact": {
+                "homepage": "https://github.com/Partacus-SPQR/VillagerCycle",
+                "sources": "https://github.com/Partacus-SPQR/VillagerCycle"
+        },
+        "license": "MIT",
+        "icon": "assets/villagercycle/icon.png",
+        "environment": "*",
+        "entrypoints": {
+                "main": [
+                        "com.villagercycle.VillagerCycleMod"
+                ],
+                "client": [
+                        "com.villagercycle.client.VillagerCycleClient"
+                ],
+                "modmenu": [
+                        "com.villagercycle.config.ModMenuIntegration"
+                ]
+        },
+        "mixins": [
+                "villagercycle.mixins.json",
+                {
+                        "config": "villagercycle.client.mixins.json",
+                        "environment": "client"
+                }
+        ],
+        "depends": {
+                "fabricloader": ">=0.16.9",
+                "minecraft": "~1.21.10",
+                "java": ">=21",
+                "fabric-api": "*",
+                "cloth-config": ">=20.0.0"
+        },
+        "recommends": {
+                "modmenu": "*"
+        }
 }

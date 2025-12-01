@@ -41,6 +41,8 @@ public abstract class MerchantScreenMixin extends HandledScreen<MerchantScreenHa
 			button -> {
 				// Always send packet - server will validate
 				ClientPlayNetworking.send(new CycleTradePayload());
+				// Remove focus from button after clicking to reset outline
+				button.setFocused(false);
 			}
 		)
 		.dimensions(buttonX, buttonY, buttonWidth, buttonHeight)

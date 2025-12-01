@@ -77,6 +77,17 @@ public class VillagerTradeUtil {
 	}
 	
 	public static boolean cycleWanderingTraderTrades(MerchantEntity trader, ServerPlayerEntity player) {
+		// Check if any trades have been used (prevent abuse)
+		TradeOfferList offers = trader.getOffers();
+		if (offers != null) {
+			for (int i = 0; i < offers.size(); i++) {
+				if (offers.get(i).hasBeenUsed()) {
+					sendCannotCycleMessage(player, "This wandering trader has already been traded with!");
+					return false;
+				}
+			}
+		}
+		
 		// Use accessor to regenerate trades
 		com.villagercycle.mixin.MerchantEntityAccessor accessor = (com.villagercycle.mixin.MerchantEntityAccessor) trader;
 		

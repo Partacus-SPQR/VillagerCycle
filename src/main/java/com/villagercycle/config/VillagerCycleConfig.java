@@ -47,10 +47,27 @@ public class VillagerCycleConfig {
 	
 	public void save() {
 		try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
+			LOGGER.info("Saving config - allowWanderingTraders: {}, enableCycleButton: {}", 
+				allowWanderingTraders, enableCycleButton);
 			GSON.toJson(this, writer);
-			LOGGER.info("Saved config to file");
+			LOGGER.info("Config successfully written to file");
 		} catch (IOException e) {
 			LOGGER.error("Failed to save config", e);
+		}
+	}
+	
+	/**
+	 * Force reload config from disk. Use this after saving to ensure
+	 * the singleton instance is up-to-date with file changes.
+	 */
+	public static void reload() {
+		if (CONFIG_FILE.exists()) {
+			try (FileReader reader = new FileReader(CONFIG_FILE)) {
+				INSTANCE = GSON.fromJson(reader, VillagerCycleConfig.class);
+				LOGGER.info("Reloaded config from file - allowWanderingTraders: {}", INSTANCE.allowWanderingTraders);
+			} catch (IOException e) {
+				LOGGER.error("Failed to reload config", e);
+			}
 		}
 	}
 	
