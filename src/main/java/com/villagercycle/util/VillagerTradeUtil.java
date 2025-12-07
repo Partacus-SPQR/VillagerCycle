@@ -44,7 +44,7 @@ public class VillagerTradeUtil {
 		return true;
 	}
 	
-	public static boolean cycleTrades(VillagerEntity villager, ServerPlayerEntity player) {
+	public static boolean cycleTrades(VillagerEntity villager, ServerPlayerEntity player, boolean showSuccessMessage) {
 		if (!canCycleTrades(villager)) {
 			return false;
 		}
@@ -61,22 +61,24 @@ public class VillagerTradeUtil {
 		// Trigger trade regeneration by clearing offers
 		villager.setOffers(null);
 		
-		// Send success message
-		player.sendMessage(
-			Text.literal("✅ Villager trades have been cycled!")
-				.formatted(Formatting.GREEN, Formatting.BOLD),
-			false
-		);
-		player.sendMessage(
-			Text.literal("🔄 The villager now has new Level 1 trades.")
-				.formatted(Formatting.YELLOW),
-			false
-		);
+		// Send success message if enabled (client controls this via packet)
+		if (showSuccessMessage) {
+			player.sendMessage(
+				Text.literal("✅ Villager trades have been cycled!")
+					.formatted(Formatting.GREEN, Formatting.BOLD),
+				false
+			);
+			player.sendMessage(
+				Text.literal("🔄 The villager now has new Level 1 trades.")
+					.formatted(Formatting.YELLOW),
+				false
+			);
+		}
 		
 		return true;
 	}
 	
-	public static boolean cycleWanderingTraderTrades(MerchantEntity trader, ServerPlayerEntity player) {
+	public static boolean cycleWanderingTraderTrades(MerchantEntity trader, ServerPlayerEntity player, boolean showSuccessMessage) {
 		// Check if any trades have been used (prevent abuse)
 		TradeOfferList offers = trader.getOffers();
 		if (offers != null) {
@@ -95,17 +97,19 @@ public class VillagerTradeUtil {
 		trader.getOffers().clear();
 		accessor.invokeFillRecipes();
 		
-		// Send success message
-		player.sendMessage(
-			Text.literal("✅ Wandering trader offers have been refreshed!")
-				.formatted(Formatting.GREEN, Formatting.BOLD),
-			false
-		);
-		player.sendMessage(
-			Text.literal("🔄 The trader now has new offers.")
-				.formatted(Formatting.YELLOW),
-			false
-		);
+		// Send success message if enabled (client controls this via packet)
+		if (showSuccessMessage) {
+			player.sendMessage(
+				Text.literal("✅ Wandering trader offers have been refreshed!")
+					.formatted(Formatting.GREEN, Formatting.BOLD),
+				false
+			);
+			player.sendMessage(
+				Text.literal("🔄 The trader now has new offers.")
+					.formatted(Formatting.YELLOW),
+				false
+			);
+		}
 		
 		return true;
 	}

@@ -1,4 +1,8 @@
 {
-  "key.villagercycle.openConfig": "Open Villager Cycle Config",
-  "category.villagercycle": "Villager Cycle"
+  "category.villagercycle.category": "Villager Cycle",
+  "key.category.villagercycle.category": "Villager Cycle",
+  "key.villagercycle.toggle": "Toggle Cycle Button",
+  "key.villagercycle.drag": "Open Button Position Screen",
+  "key.villagercycle.config": "Open Config Screen",
+  "key.villagercycle.reload": "Reload Config File"
 }

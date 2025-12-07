@@ -21,9 +21,17 @@ import net.minecraft.village.VillagerProfession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class VillagerCycleMod implements ModInitializer {
 	public static final String MOD_ID = "villagercycle";
 	public static final Logger LOGGER = LoggerFactory.getLogger("VillagerCycle");
+	
+	// Track cycle counts per entity UUID
+	private static final Map<UUID, Integer> wanderingTraderCycleCounts = new HashMap<>();
+	private static final Map<UUID, Integer> villagerCycleCounts = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
@@ -44,11 +52,14 @@ public class VillagerCycleMod implements ModInitializer {
 				// Only allow operators to reload config
 				if (player.hasPermissionLevel(4)) {
 					VillagerCycleConfig config = VillagerCycleConfig.getInstance();
-					// Update the server's config with the value from client
+					// Update the server's config with the values from client
 					config.allowWanderingTraders = payload.allowWanderingTraders();
+					config.wanderingTraderCycleLimit = payload.wanderingTraderCycleLimit();
+					config.villagerCycleLimit = payload.villagerCycleLimit();
 					config.save(); // Save to server's config file
-					LOGGER.info("Config updated by operator {} - allowWanderingTraders: {}", 
-						player.getName().getString(), payload.allowWanderingTraders());
+					LOGGER.info("Config updated by operator {} - allowWanderingTraders: {}, wanderingCycleLimit: {}, villagerCycleLimit: {}", 
+						player.getName().getString(), payload.allowWanderingTraders(), 
+						payload.wanderingTraderCycleLimit(), payload.villagerCycleLimit());
 				} else {
 					LOGGER.warn("Non-operator {} attempted to reload config", player.getName().getString());
 				}
@@ -89,14 +100,32 @@ public class VillagerCycleMod implements ModInitializer {
 					LOGGER.info("Detected WanderingTraderEntity");
 					if (!config.allowWanderingTraders) {
 						LOGGER.info("Wandering traders disabled in config");
-						VillagerTradeUtil.sendCannotCycleMessage(player, "Wandering traders are not supported. Enable in config if desired.");
+						VillagerTradeUtil.sendCannotCycleMessage(player, "Wandering trader cycling is disabled by the server.");
 						return;
 					}
-					LOGGER.info("Wandering traders enabled, cycling...");
-					// Handle wandering trader if enabled
+					
 					WanderingTraderEntity wanderingTrader = (WanderingTraderEntity) merchant;
-					boolean success = VillagerTradeUtil.cycleWanderingTraderTrades(wanderingTrader, player);
+					UUID traderUuid = wanderingTrader.getUuid();
+					
+					// Check cycle limit (if not unlimited)
+					int cycleLimit = config.wanderingTraderCycleLimit;
+					if (cycleLimit >= 0) { // -1 means unlimited
+						int currentCount = wanderingTraderCycleCounts.getOrDefault(traderUuid, 0);
+						if (currentCount >= cycleLimit) {
+							VillagerTradeUtil.sendCannotCycleMessage(player, 
+								"Wandering trader cycle limit reached (" + cycleLimit + " cycles max).");
+							return;
+						}
+					}
+					
+					LOGGER.info("Wandering traders enabled, cycling...");
+					boolean showMessage = payload.showWanderingTraderSuccessMessage();
+					boolean success = VillagerTradeUtil.cycleWanderingTraderTrades(wanderingTrader, player, showMessage);
 					if (success) {
+						// Increment cycle count
+						int newCount = wanderingTraderCycleCounts.getOrDefault(traderUuid, 0) + 1;
+						wanderingTraderCycleCounts.put(traderUuid, newCount);
+						
 						player.networkHandler.sendPacket(new SetTradeOffersS2CPacket(
 							merchantHandler.syncId,
 							wanderingTrader.getOffers(),
@@ -105,7 +134,8 @@ public class VillagerCycleMod implements ModInitializer {
 							false,
 							false
 						));
-						LOGGER.info("Successfully cycled wandering trader trades and updated client GUI");
+						LOGGER.info("Successfully cycled wandering trader trades and updated client GUI (cycle {}/{})", 
+							newCount, cycleLimit < 0 ? "unlimited" : cycleLimit);
 					} else {
 						VillagerTradeUtil.sendCannotCycleMessage(player, "Unable to cycle trades at this time.");
 					}
@@ -140,9 +170,30 @@ public class VillagerCycleMod implements ModInitializer {
 					return;
 				}
 				
+				// Check villager cycle limit
+				UUID villagerUuid = villager.getUuid();
+				int villagerCycleLimit = config.villagerCycleLimit;
+				if (villagerCycleLimit == 0) {
+					VillagerTradeUtil.sendCannotCycleMessage(player, "Villager cycling is disabled by the server.");
+					return;
+				}
+				if (villagerCycleLimit > 0) { // -1 means unlimited
+					int currentCount = villagerCycleCounts.getOrDefault(villagerUuid, 0);
+					if (currentCount >= villagerCycleLimit) {
+						VillagerTradeUtil.sendCannotCycleMessage(player, 
+							"Villager cycle limit reached (" + villagerCycleLimit + " cycles max).");
+						return;
+					}
+				}
+				
 				// Perform the trade cycle
-				boolean success = VillagerTradeUtil.cycleTrades(villager, player);
+				boolean showMessage = payload.showVillagerSuccessMessage();
+				boolean success = VillagerTradeUtil.cycleTrades(villager, player, showMessage);
 				if (success) {
+					// Increment cycle count
+					int newCount = villagerCycleCounts.getOrDefault(villagerUuid, 0) + 1;
+					villagerCycleCounts.put(villagerUuid, newCount);
+					
 					// Send updated trade list packet directly to client for real-time refresh
 					player.networkHandler.sendPacket(new SetTradeOffersS2CPacket(
 						merchantHandler.syncId,
@@ -152,7 +203,8 @@ public class VillagerCycleMod implements ModInitializer {
 						villager.isLeveledMerchant(),
 						villager.canRefreshTrades()
 					));
-					LOGGER.info("Successfully cycled trades and updated client GUI");
+					LOGGER.info("Successfully cycled trades and updated client GUI (cycle {}/{})", 
+						newCount, villagerCycleLimit < 0 ? "unlimited" : villagerCycleLimit);
 				} else {
 					VillagerTradeUtil.sendCannotCycleMessage(player, "Unable to cycle trades at this time.");
 				}

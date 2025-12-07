@@ -21,10 +21,17 @@ public class VillagerCycleConfig {
 	// Config options
 	public boolean enableCycleButton = true;
 	public boolean allowWanderingTraders = false;
+	public boolean showSuccessMessage = true;
+	public boolean showWanderingTraderSuccessMessage = true;
+	public int villagerCycleLimit = -1; // Default unlimited, -1 = unlimited, 0 = disabled, 1+ = limited
+	public int wanderingTraderCycleLimit = 1; // Default to 1 cycle, -1 = unlimited
 	public int buttonOffsetX = 6;
 	public int buttonOffsetY = -25;
 	public int buttonWidth = 100;
 	public int buttonHeight = 20;
+	
+	// Runtime tracking (not saved to config)
+	public transient java.util.Map<java.util.UUID, Integer> wanderingTraderCycleCounts = new java.util.HashMap<>();
 	
 	public static VillagerCycleConfig load() {
 		if (INSTANCE == null) {

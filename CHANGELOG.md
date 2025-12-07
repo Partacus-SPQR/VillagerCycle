@@ -2,6 +2,27 @@
 
 All notable changes to the Villager Cycle mod will be documented in this file.
 
+## [1.2.0] - 2025-12-07
+
+### Added
+- **Draggable Button**: Reposition the cycle button via drag screen (set keybind to access)
+- **Villager Cycle Limit**: Configurable limit on cycles per villager (operator only, default: unlimited)
+- **Wandering Trader Cycle Limit**: Configurable limit on cycles per trader (operator only, default: 1)
+- **Show Villager Success Message**: Client-side toggle to hide success messages (reduces chat spam)
+- **Show Wandering Trader Success Message**: Client-side toggle to hide trader success messages
+- **Button Size Sliders**: Configurable button width and height in config
+- **Keybinds**: All unbound by default, set in Controls menu:
+  - Toggle button visibility
+  - Open button position (drag) screen
+  - Open config screen
+  - Reload config file
+  - Cycle trades (works while merchant screen is open)
+
+### Changed
+- Success message settings are now client-side (each player controls their own)
+- Cycle limits are operator-only settings on multiplayer servers
+- All features work in singleplayer with full control
+
 ## [1.1.0] - 2025-12-01
 
 ### Added

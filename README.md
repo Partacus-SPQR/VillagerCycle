@@ -1,79 +1,52 @@
 # Villager Cycle
 
-A simple Quality of Life mod for Minecraft 1.21.10 Fabric that adds a convenient button to villager trading screens, allowing you to refresh their trades before making any purchases.
+A Quality of Life mod for Minecraft 1.21.10 Fabric that adds a button to villager trading screens, allowing you to refresh their trades before making any purchases.
 
 ## Features
 
-- **Cycle Trades Button**: A button appears above the villager trading GUI for easy access
+- **Cycle Trades Button**: Customizable button above the villager trading GUI
+- **Draggable Button Position**: Reposition the button via drag screen
 - **Real-Time Updates**: Trade offers refresh instantly without closing the GUI
-- **Smart Validation**: Only works on villagers that meet specific criteria:
-  - Must have a profession (excludes Nitwits and Unemployed villagers)
-  - Cannot have been traded with previously
-  - No trades can have been used
-- **Server-Side Security**: All validation and trade cycling happens server-side to prevent exploitation
-- **Anti-Exploit Protection**: Automatically clears trade input slots to prevent item duplication
-- **Clear User Feedback**: Receive immediate feedback messages about success or failure
-- **Configurable Settings**: In-game configuration screen via ModMenu
-- **Wandering Trader Support**: Optional feature that can be enabled by server operators (operator level 4 required)
-
-## Compatibility
-
-- **Singleplayer**: Works perfectly in singleplayer worlds. Simply install the mod and its dependencies.
-- **Multiplayer**: Fully compatible with multiplayer servers. Server operators control wandering trader functionality.
-- **Modpacks**: Free to include in modpacks under MIT License.
+- **Keybind Support**: Optional keybinds for all mod functions
+- **Configurable Cycle Limits**: Set limits on how many times trades can be cycled (this works per villager only)
+- **Wandering Trader Support**: Optional feature (operator-controlled on servers)
+- **Smart Validation**: Only works on valid villagers (must have profession, not traded with)
+- **Server-Side Security**: All validation happens server-side
+- **Anti-Exploit Protection**: Clears trade input slots to prevent item duplication
 
 ## Installation
 
-1. Download the latest release from the [Releases](https://github.com/Partacus-SPQR/VillagerCycle/releases) page
-2. Place the `.jar` file in your `.minecraft/mods` folder
-3. Ensure you have the required dependencies installed:
-   - **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.138.3+1.21.10 or higher (Required)
-   - **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149 or higher (Required)
-   - **[ModMenu](https://modrinth.com/mod/modmenu)** (Optional - only needed for in-game config GUI)
-4. Launch Minecraft 1.21.10 with Fabric Loader 0.16.9 or higher
-
-### Dependency Clarification
-
-- **Fabric API + Cloth Config**: Required for the mod to function. The mod will not load without these.
-- **ModMenu**: Optional. Provides in-game GUI access to the config screen.
-  - **With ModMenu**: Access config via Mods menu → Villager Cycle → Config icon
-  - **Without ModMenu**: Manually edit the config file (see below)
+1. Download from [Releases](https://github.com/Partacus-SPQR/VillagerCycle/releases)
+2. Place `.jar` in your `.minecraft/mods` folder
+3. Required dependencies:
+   - **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.138.3+1.21.10+
+   - **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149+
+4. Optional: **[ModMenu](https://modrinth.com/mod/modmenu)** for in-game config GUI
+5. Launch Minecraft 1.21.10 with Fabric Loader 0.16.9+
 
 ## How to Use
 
-1. Locate a villager with a profession
-2. Right-click to open the trading interface
-3. Click the "Cycle Trades" button positioned above the trading GUI
-4. The villager's Level 1 trades will instantly regenerate with new random offers
+1. Open a villager's trading interface
+2. Click the "Cycle Trades" button (or use the keybind)
+3. The villager's Level 1 trades will regenerate with new offers
 
 ## Configuration
 
-### Accessing Config
-
-**Option 1: In-Game Config Screen (Recommended)**
-1. Install [ModMenu](https://modrinth.com/mod/modmenu)
-2. Open the main menu or pause menu
-3. Click "Mods" button
-4. Find "Villager Cycle" in the list
-5. Click the config icon (⚙️) next to the mod name
-
-**Option 2: Manual Config File**
-
-If you don't want to install ModMenu, you can manually edit the configuration file:
-
-**File Location:**
+### Config File Location
 - **Windows**: `%appdata%\.minecraft\config\villagercycle.json`
 - **macOS**: `~/Library/Application Support/minecraft/config/villagercycle.json`
 - **Linux**: `~/.minecraft/config/villagercycle.json`
 
-The config file is automatically created on first launch with default values. Simply open it in any text editor to modify settings.
-
-### Configuration Options
+### Options
 
 ```json
 {
   "enableCycleButton": true,
   "allowWanderingTraders": false,
+  "showSuccessMessage": true,
+  "showWanderingTraderSuccessMessage": true,
+  "villagerCycleLimit": -1,
+  "wanderingTraderCycleLimit": 1,
   "buttonOffsetX": 6,
   "buttonOffsetY": -25,
   "buttonWidth": 100,
@@ -81,70 +54,61 @@ The config file is automatically created on first launch with default values. Si
 }
 ```
 
-#### Options Explained
+| Option | Default | Description |
+|--------|---------|-------------|
+| `enableCycleButton` | `true` | Show/hide the cycle button |
+| `showSuccessMessage` | `true` | Show villager cycle success message (client-side) |
+| `showWanderingTraderSuccessMessage` | `true` | Show wandering trader success message (client-side) |
+| `allowWanderingTraders` | `false` | Enable wandering trader cycling (**operator only** on servers) |
+| `villagerCycleLimit` | `-1` | Max cycles per villager: -1=unlimited (**operator only** on servers) |
+| `wanderingTraderCycleLimit` | `1` | Max cycles per wandering trader: -1=unlimited (**operator only** on servers) |
+| `buttonOffsetX/Y` | `6`/`-25` | Button position offset from GUI |
+| `buttonWidth/Height` | `100`/`20` | Button dimensions (pixels) |
 
-- **enableCycleButton** (default: `true`)
-  - Enable or disable the cycle trades button entirely
-  - Set to `false` to hide the button
+### Keybinds
 
-- **allowWanderingTraders** (default: `false`)
-  - Allow cycling trades for wandering traders
-  - **Operator Permission Required**: On multiplayer servers, only operators with level 4 permission can toggle this setting
-  - When enabled, wandering trader offers will be completely refreshed
-  - Players without operator permissions will receive a message if they attempt to change this setting
+All keybinds are **unbound by default**. Set them in Options → Controls → Villager Cycle.
 
-- **buttonOffsetX** (default: `6`)
-  - Horizontal position offset from the left edge of the trading GUI
-  - Adjust if the button overlaps with other UI elements
+| Keybind | Function |
+|---------|----------|
+| Toggle Button Visibility | Show/hide the cycle button |
+| Open Button Position Screen | Open drag screen to reposition button |
+| Open Config Screen | Open the mod configuration screen |
+| Reload Config File | Reload config from disk |
+| Cycle Trades | Cycle trades while in merchant screen |
 
-- **buttonOffsetY** (default: `-25`)
-  - Vertical position offset from the top edge of the trading GUI
-  - Negative values place the button above the GUI
-  - Positive values place it below
+## Singleplayer vs Multiplayer
 
-- **buttonWidth** (default: `100`)
-  - Width of the button in pixels
-  - Range: 50-200 pixels
+- **Singleplayer**: All features available with full control over all settings.
+- **Multiplayer**: Operator permission (level 4) required for:
+  - Allow Wandering Traders toggle
+  - Villager Cycle Limit
+  - Wandering Trader Cycle Limit
 
-- **buttonHeight** (default: `20`)
-  - Height of the button in pixels
-  - Range: 10-40 pixels
-
-### Config Notes
-
-- Changes to the config take effect immediately when you click "Done" in the config screen
-- On multiplayer servers, only operators with level 4 permission can toggle the wandering trader setting
-- The config file is created automatically when you first launch the game with the mod installed
+Success message toggles are client-side — each player controls their own preference.
 
 ## Limitations
 
-- Only works on villagers you have not traded with yet
-- Only works on villagers with valid professions (not Nitwits or Unemployed)
-- Cannot cycle trades if any trades have been used
-- Only refreshes Level 1 trades (villagers must be at experience level 0)
-- Wandering trader cycling requires operator permission on multiplayer servers
-- Items in trade input slots are automatically returned to your inventory when cycling
+- Only works on villagers not yet traded with
+- Only works on villagers with valid professions (not Nitwits/Unemployed)
+- Only refreshes Level 1 trades (experience level 0)
+- Items in trade slots are returned to inventory when cycling
 
 ## Technical Requirements
 
 - **Minecraft**: 1.21.10
-- **Fabric Loader**: 0.16.9 or higher
-- **Java**: 21 or higher
-
-### Required Dependencies
-- **Fabric API**: 0.138.3+1.21.10 or higher
-- **Cloth Config**: 20.0.149 or higher
-
-### Optional Dependencies
-- **ModMenu**: Only required if you want in-game GUI access to config. Not needed if manually editing config file.
+- **Fabric Loader**: 0.16.9+
+- **Java**: 21+
+- **Fabric API**: 0.138.3+1.21.10+
+- **Cloth Config**: 20.0.149+
 
 ## License
 
-This mod is licensed under the MIT License. You are free to include it in modpacks.
+MIT License — Free to include in modpacks.
 
 ## Support
 
-If you encounter any bugs or issues, please [open an issue](https://github.com/Partacus-SPQR/VillagerCycle/issues) on GitHub with a detailed description and your game logs.
+[Open an issue](https://github.com/Partacus-SPQR/VillagerCycle/issues) on GitHub for bugs or suggestions.
 
 ## Author
 
