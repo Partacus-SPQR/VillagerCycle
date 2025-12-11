@@ -1,7 +1,7 @@
 package com.villagercycle.client;
 
 import com.villagercycle.client.screen.ButtonDragScreen;
-import com.villagercycle.config.ModConfigScreen;
+import com.villagercycle.config.ModMenuIntegration;
 import com.villagercycle.config.VillagerCycleConfig;
 import com.villagercycle.network.CycleTradePayload;
 import net.fabricmc.api.ClientModInitializer;
@@ -89,7 +89,7 @@ public class VillagerCycleClient implements ClientModInitializer {
 			// Open config screen
 			while (openConfigKeyBinding.wasPressed()) {
 				if (client.currentScreen == null) {
-					client.setScreen(ModConfigScreen.createConfigScreen(null));
+					client.setScreen(ModMenuIntegration.getConfigScreen(null));
 				}
 			}
 			

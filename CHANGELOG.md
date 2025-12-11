@@ -2,6 +2,23 @@
 
 All notable changes to the Villager Cycle mod will be documented in this file.
 
+## [1.3.0] - 2025-12-11
+
+### Added
+- **Fallback Config Screen**: Vanilla config UI when Cloth Config is not installed
+- **Mouse Button Keybinds**: Cycle trades keybind now supports mouse buttons (e.g., Button 4/5)
+
+### Changed
+- **Cloth Config**: Now optional (recommended for enhanced config UI)
+- **ModMenu**: Now optional (recommended for in-game config access)
+- Updated to Minecraft 1.21.11
+- Updated to Fabric Loader 0.18.2
+- Updated to Fabric API 0.139.4+1.21.11
+- Updated to Gradle 9.2.1 and Loom 1.14
+
+### Fixed
+- Cycle trades keybind now properly detects key presses while merchant screen is open
+
 ## [1.2.0] - 2025-12-07
 
 ### Added
@@ -41,8 +58,8 @@ All notable changes to the Villager Cycle mod will be documented in this file.
 - **Config Persistence**: Config changes in GUI now properly sync to server in multiplayer
 
 ### Changed
-- **Cloth Config**: Now a required dependency
-- **ModMenu**: Now optional (only needed for in-game config access)
+- Cloth Config integration for visual config screen
+- ModMenu optional (only needed for in-game config access via mod list)
 - Wandering trader cycling disabled by default for security
 - Config tooltips show default values in gray text
 - Server logs show operator actions when toggling settings

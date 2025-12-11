@@ -1,14 +1,14 @@
 # Villager Cycle
 
-A Quality of Life mod for Minecraft 1.21.10 Fabric that adds a button to villager trading screens, allowing you to refresh their trades before making any purchases.
+A Quality of Life mod for Minecraft 1.21.11 Fabric that adds a button to villager trading screens, allowing you to refresh their trades before making any purchases.
 
 ## Features
 
 - **Cycle Trades Button**: Customizable button above the villager trading GUI
 - **Draggable Button Position**: Reposition the button via drag screen
 - **Real-Time Updates**: Trade offers refresh instantly without closing the GUI
-- **Keybind Support**: Optional keybinds for all mod functions
-- **Configurable Cycle Limits**: Set limits on how many times trades can be cycled (this works per villager only)
+- **Keybind Support**: Keyboard and mouse button bindings for all mod functions
+- **Configurable Cycle Limits**: Set limits on how many times trades can be cycled (per villager)
 - **Wandering Trader Support**: Optional feature (operator-controlled on servers)
 - **Smart Validation**: Only works on valid villagers (must have profession, not traded with)
 - **Server-Side Security**: All validation happens server-side
@@ -18,11 +18,10 @@ A Quality of Life mod for Minecraft 1.21.10 Fabric that adds a button to village
 
 1. Download from [Releases](https://github.com/Partacus-SPQR/VillagerCycle/releases)
 2. Place `.jar` in your `.minecraft/mods` folder
-3. Required dependencies:
-   - **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.138.3+1.21.10+
-   - **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149+
-4. Optional: **[ModMenu](https://modrinth.com/mod/modmenu)** for in-game config GUI
-5. Launch Minecraft 1.21.10 with Fabric Loader 0.16.9+
+3. Required: **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.139.4+1.21.11+
+4. Recommended: **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149+ (enhanced config UI)
+5. Recommended: **[ModMenu](https://modrinth.com/mod/modmenu)** 17.0.0+ (in-game config access)
+6. Launch Minecraft 1.21.11 with Fabric Loader 0.18.2+
 
 ## How to Use
 
@@ -69,13 +68,15 @@ A Quality of Life mod for Minecraft 1.21.10 Fabric that adds a button to village
 
 All keybinds are **unbound by default**. Set them in Options → Controls → Villager Cycle.
 
+Supports both keyboard keys and mouse buttons (e.g., Mouse Button 4/5).
+
 | Keybind | Function |
 |---------|----------|
 | Toggle Button Visibility | Show/hide the cycle button |
 | Open Button Position Screen | Open drag screen to reposition button |
 | Open Config Screen | Open the mod configuration screen |
 | Reload Config File | Reload config from disk |
-| Cycle Trades | Cycle trades while in merchant screen |
+| Cycle Trades | Cycle trades while in merchant screen (keyboard or mouse) |
 
 ## Singleplayer vs Multiplayer
 
@@ -96,11 +97,12 @@ Success message toggles are client-side — each player controls their own prefe
 
 ## Technical Requirements
 
-- **Minecraft**: 1.21.10
-- **Fabric Loader**: 0.16.9+
+- **Minecraft**: 1.21.11
+- **Fabric Loader**: 0.18.2+
 - **Java**: 21+
-- **Fabric API**: 0.138.3+1.21.10+
-- **Cloth Config**: 20.0.149+
+- **Fabric API**: 0.139.4+1.21.11+ (required)
+- **Cloth Config**: 20.0.149+ (optional, recommended)
+- **ModMenu**: 17.0.0+ (optional, recommended)
 
 ## License
 

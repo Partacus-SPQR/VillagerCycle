@@ -65,23 +65,35 @@ public abstract class MerchantScreenMixin extends HandledScreen<MerchantScreenHa
 		// Check if the cycle trades keybind is pressed
 		// We need to check this in render because wasPressed() doesn't work with screens open
 		if (VillagerCycleClient.cycleTradesKeyBinding != null && this.client != null) {
-			// Get the currently bound key (not the default)
-			InputUtil.Key boundKey = InputUtil.fromTranslationKey(VillagerCycleClient.cycleTradesKeyBinding.getBoundKeyTranslationKey());
-			
-			// Only check if a key is actually bound (not UNKNOWN)
-			if (boundKey.getCode() != InputUtil.UNKNOWN_KEY.getCode()) {
-				long windowHandle = this.client.getWindow().getHandle();
-				boolean isKeyDown = GLFW.glfwGetKey(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
-				
-				// Trigger on key press (not while held)
-				if (isKeyDown && !villagercycle$keyWasDown) {
-					// Send the cycle trade packet with both message preferences
-					VillagerCycleConfig cfg = VillagerCycleConfig.getInstance();
-					ClientPlayNetworking.send(new CycleTradePayload(cfg.showSuccessMessage, cfg.showWanderingTraderSuccessMessage));
-				}
-				
-				villagercycle$keyWasDown = isKeyDown;
+			// Check if keybind is unbound
+			if (VillagerCycleClient.cycleTradesKeyBinding.isUnbound()) {
+				return;
 			}
+			
+			// Get the bound key translation and parse it to get the key code
+			String keyTranslation = VillagerCycleClient.cycleTradesKeyBinding.getBoundKeyTranslationKey();
+			InputUtil.Key boundKey = InputUtil.fromTranslationKey(keyTranslation);
+			
+			long windowHandle = this.client.getWindow().getHandle();
+			boolean isKeyDown = false;
+			
+			// Check keyboard keys
+			if (boundKey.getCategory() == InputUtil.Type.KEYSYM) {
+				isKeyDown = GLFW.glfwGetKey(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
+			}
+			// Check mouse buttons (Button 4 = GLFW_MOUSE_BUTTON_4, Button 5 = GLFW_MOUSE_BUTTON_5, etc.)
+			else if (boundKey.getCategory() == InputUtil.Type.MOUSE) {
+				isKeyDown = GLFW.glfwGetMouseButton(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
+			}
+			
+			// Trigger on key/button press (not while held)
+			if (isKeyDown && !villagercycle$keyWasDown) {
+				// Send the cycle trade packet with both message preferences
+				VillagerCycleConfig cfg = VillagerCycleConfig.getInstance();
+				ClientPlayNetworking.send(new CycleTradePayload(cfg.showSuccessMessage, cfg.showWanderingTraderSuccessMessage));
+			}
+			
+			villagercycle$keyWasDown = isKeyDown;
 		}
 	}
 }

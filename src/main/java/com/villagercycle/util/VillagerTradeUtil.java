@@ -95,7 +95,7 @@ public class VillagerTradeUtil {
 		
 		// Clear offers and regenerate
 		trader.getOffers().clear();
-		accessor.invokeFillRecipes();
+		accessor.invokeFillRecipes((net.minecraft.server.world.ServerWorld) trader.getEntityWorld());
 		
 		// Send success message if enabled (client controls this via packet)
 		if (showSuccessMessage) {

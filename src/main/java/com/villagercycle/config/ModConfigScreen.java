@@ -8,6 +8,8 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.command.permission.Permission;
+import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -89,7 +91,7 @@ public class ModConfigScreen {
 		
 		if (client.player != null) {
 			isSingleplayer = client.isInSingleplayer();
-			isOperator = client.player.hasPermissionLevel(4);
+			isOperator = client.player.getPermissions().hasPermission(new Permission.Level(PermissionLevel.OWNERS));
 		}
 		
 		// Store the original value for non-operators to revert to

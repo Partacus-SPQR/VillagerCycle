@@ -8,6 +8,8 @@ import com.villagercycle.util.VillagerTradeUtil;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.command.permission.Permission;
+import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.ItemStack;
@@ -50,7 +52,7 @@ public class VillagerCycleMod implements ModInitializer {
 			
 			context.server().execute(() -> {
 				// Only allow operators to reload config
-				if (player.hasPermissionLevel(4)) {
+				if (player.getPermissions().hasPermission(new Permission.Level(PermissionLevel.OWNERS))) {
 					VillagerCycleConfig config = VillagerCycleConfig.getInstance();
 					// Update the server's config with the values from client
 					config.allowWanderingTraders = payload.allowWanderingTraders();
