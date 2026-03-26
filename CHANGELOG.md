@@ -2,6 +2,35 @@
 
 All notable changes to the Villager Cycle mod will be documented in this file.
 
+## [1.4.0] - 2026-03-25
+
+### Added
+- Minecraft 26.1 support
+- Minecraft 1.21.9 and 1.21.10 support
+- Java 25 toolchain support
+- Unobfuscated jar handling for MC 26.1 (no mappings required)
+- Multi-version builds via Stonecutter (1.21.9, 1.21.10, 1.21.11, 26.1)
+
+### Changed
+- Migrated from Yarn to Mojang mappings
+- Updated Gradle wrapper to 9.4.1
+- Updated Fabric Loom to 1.15.5
+- Updated Fabric Loader to 0.18.4
+- Adapted all source files with Stonecutter conditionals for API changes:
+  - `PayloadTypeRegistry.playC2S()` → `serverboundPlay()` (26.1)
+  - `displayClientMessage()` → `sendSystemMessage()` (26.1)
+  - `KeyBindingHelper` → `KeyMappingHelper` / `KeyBinding` → `KeyMapping` (26.1)
+  - `GuiGraphics` → `GuiGraphicsExtractor` with new render methods (26.1)
+  - `Villager` package restructured in 1.21.11+
+  - `ResourceLocation` → `Identifier` (1.21.11+)
+  - Permission API changes for 1.21.11+
+- Cloth Config excluded for 26.1 (no compatible version available yet)
+- Fallback config screen used when Cloth Config is unavailable
+
+### Technical
+- Stonecutter 0.5.1 for multi-version source management
+- Single source tree with version conditionals
+
 ## [1.3.0] - 2025-12-11
 
 ### Added

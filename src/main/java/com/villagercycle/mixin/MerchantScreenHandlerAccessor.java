@@ -1,12 +1,12 @@
 package com.villagercycle.mixin;
 
-import net.minecraft.screen.MerchantScreenHandler;
-import net.minecraft.village.Merchant;
+import net.minecraft.world.inventory.MerchantMenu;
+import net.minecraft.world.item.trading.Merchant;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(MerchantScreenHandler.class)
+@Mixin(MerchantMenu.class)
 public interface MerchantScreenHandlerAccessor {
-	@Accessor("merchant")
-	Merchant getMerchant();
+        @Accessor("trader")
+        Merchant getMerchant();
 }

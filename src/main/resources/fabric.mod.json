@@ -1,8 +1,8 @@
-﻿{
+{
         "schemaVersion": 1,
-        "id": "villagercycle",
+        "id": "${id}",
         "version": "${version}",
-        "name": "Villager Cycle",
+        "name": "${name}",
         "description": "Easily refresh villager trades with a single click! Adds a cycle button to villager trading screens that allows you to regenerate Level 1 trades before trading with them.",
         "authors": [
                 "Partacus-SPQR"
@@ -34,12 +34,12 @@
         ],
         "depends": {
                 "fabricloader": ">=0.18.0",
-                "minecraft": "~1.21.11",
+                "minecraft": "${minecraft}",
                 "java": ">=21",
                 "fabric-api": "*"
         },
         "recommends": {
-                "modmenu": ">=17.0.0",
-                "cloth-config": ">=20.0.0"
+                "modmenu": "*",
+                "cloth-config": "*"
         }
 }

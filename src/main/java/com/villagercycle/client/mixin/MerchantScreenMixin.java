@@ -4,14 +4,13 @@ import com.villagercycle.client.VillagerCycleClient;
 import com.villagercycle.config.VillagerCycleConfig;
 import com.villagercycle.network.CycleTradePayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.ingame.MerchantScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.screen.MerchantScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.MerchantScreen;
+import net.minecraft.client.gui.components.Button;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.inventory.MerchantMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -19,81 +18,84 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+//? if >=26.1
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+//? if <26.1
+/*import net.minecraft.client.gui.GuiGraphics;*/
+
 @Mixin(MerchantScreen.class)
-public abstract class MerchantScreenMixin extends HandledScreen<MerchantScreenHandler> {
-	
-	@Unique
-	private boolean villagercycle$keyWasDown = false;
-	
-	private MerchantScreenMixin() {
-		super(null, null, null);
-	}
-	
-	@Inject(method = "init", at = @At("TAIL"))
-	private void addCycleTradeButton(CallbackInfo ci) {
-		VillagerCycleConfig config = VillagerCycleConfig.getInstance();
-		
-		// Check if button is enabled in config
-		if (!config.enableCycleButton) {
-			return;
-		}
-		
-		// Use config values for button position and size
-		int buttonX = this.x + config.buttonOffsetX;
-		int buttonY = this.y + config.buttonOffsetY;
-		int buttonWidth = config.buttonWidth;
-		int buttonHeight = config.buttonHeight;
-		
-		ButtonWidget cycleButton = ButtonWidget.builder(
-			Text.literal("🔄 Cycle Trades").formatted(Formatting.YELLOW),
-			button -> {
-				// Send packet with client's message preferences for both villagers and wandering traders
-				VillagerCycleConfig cfg = VillagerCycleConfig.getInstance();
-				ClientPlayNetworking.send(new CycleTradePayload(cfg.showSuccessMessage, cfg.showWanderingTraderSuccessMessage));
-				// Remove focus from button after clicking to reset outline
-				button.setFocused(false);
-			}
-		)
-		.dimensions(buttonX, buttonY, buttonWidth, buttonHeight)
-		.build();
-		
-		this.addDrawableChild(cycleButton);
-	}
-	
-	@Inject(method = "drawBackground", at = @At("TAIL"))
-	private void checkKeybindOnRender(DrawContext context, float delta, int mouseX, int mouseY, CallbackInfo ci) {
-		// Check if the cycle trades keybind is pressed
-		// We need to check this in render because wasPressed() doesn't work with screens open
-		if (VillagerCycleClient.cycleTradesKeyBinding != null && this.client != null) {
-			// Check if keybind is unbound
-			if (VillagerCycleClient.cycleTradesKeyBinding.isUnbound()) {
-				return;
-			}
-			
-			// Get the bound key translation and parse it to get the key code
-			String keyTranslation = VillagerCycleClient.cycleTradesKeyBinding.getBoundKeyTranslationKey();
-			InputUtil.Key boundKey = InputUtil.fromTranslationKey(keyTranslation);
-			
-			long windowHandle = this.client.getWindow().getHandle();
-			boolean isKeyDown = false;
-			
-			// Check keyboard keys
-			if (boundKey.getCategory() == InputUtil.Type.KEYSYM) {
-				isKeyDown = GLFW.glfwGetKey(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
-			}
-			// Check mouse buttons (Button 4 = GLFW_MOUSE_BUTTON_4, Button 5 = GLFW_MOUSE_BUTTON_5, etc.)
-			else if (boundKey.getCategory() == InputUtil.Type.MOUSE) {
-				isKeyDown = GLFW.glfwGetMouseButton(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
-			}
-			
-			// Trigger on key/button press (not while held)
-			if (isKeyDown && !villagercycle$keyWasDown) {
-				// Send the cycle trade packet with both message preferences
-				VillagerCycleConfig cfg = VillagerCycleConfig.getInstance();
-				ClientPlayNetworking.send(new CycleTradePayload(cfg.showSuccessMessage, cfg.showWanderingTraderSuccessMessage));
-			}
-			
-			villagercycle$keyWasDown = isKeyDown;
-		}
-	}
+public abstract class MerchantScreenMixin extends AbstractContainerScreen<MerchantMenu> {
+    @Unique
+    private boolean villagercycle$keyWasDown = false;
+
+    private MerchantScreenMixin() {
+        super(null, null, null);
+    }
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void addCycleButton(CallbackInfo ci) {
+        VillagerCycleConfig config = VillagerCycleConfig.getInstance();
+        if (!config.enableCycleButton) return;
+
+        int buttonWidth = config.buttonWidth;
+        int buttonHeight = config.buttonHeight;
+        int buttonX = this.leftPos + config.buttonOffsetX;
+        int buttonY = this.topPos + config.buttonOffsetY;
+
+        Button cycleButton = Button.builder(
+            Component.literal("Cycle Trades").withStyle(ChatFormatting.GREEN),
+            button -> {
+                ClientPlayNetworking.send(new CycleTradePayload(
+                    config.showSuccessMessage,
+                    config.showWanderingTraderSuccessMessage
+                ));
+            }
+        )
+        .bounds(buttonX, buttonY, buttonWidth, buttonHeight)
+        .build();
+
+        this.addRenderableWidget(cycleButton);
+    }
+
+    //? if >=26.1 {
+    @Inject(method = "extractBackground", at = @At("TAIL"))
+    private void checkKeybindOnRender(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    //?} else {
+    /*@Inject(method = "renderBg", at = @At("TAIL"))
+    private void checkKeybindOnRender(GuiGraphics context, float delta, int mouseX, int mouseY, CallbackInfo ci) {*/
+    //?}
+        // Check if the cycle trades keybind is pressed
+        // We need to check this in render because consumeClick() doesn't work with screens open
+        if (VillagerCycleClient.cycleTradesKeyMapping != null && this.minecraft != null) {
+            // Check if keybind is unbound
+            if (VillagerCycleClient.cycleTradesKeyMapping.isUnbound()) {
+                return;
+            }
+
+            // Get the bound key and parse it to get the key code
+            String keyName = VillagerCycleClient.cycleTradesKeyMapping.saveString();
+            InputConstants.Key boundKey = InputConstants.getKey(keyName);
+
+            long windowHandle = this.minecraft.getWindow().handle();
+            boolean isKeyDown = false;
+
+            // Check keyboard keys
+            if (boundKey.getType() == InputConstants.Type.KEYSYM) {
+                isKeyDown = GLFW.glfwGetKey(windowHandle, boundKey.getValue()) == GLFW.GLFW_PRESS;
+            }
+            // Check mouse buttons (Button 4 = GLFW_MOUSE_BUTTON_4, Button 5 = GLFW_MOUSE_BUTTON_5, etc.)
+            else if (boundKey.getType() == InputConstants.Type.MOUSE) {
+                isKeyDown = GLFW.glfwGetMouseButton(windowHandle, boundKey.getValue()) == GLFW.GLFW_PRESS;
+            }
+
+            // Trigger on key/button press (not while held)
+            if (isKeyDown && !villagercycle$keyWasDown) {
+                // Send the cycle trade packet with both message preferences
+                VillagerCycleConfig cfg = VillagerCycleConfig.getInstance();
+                ClientPlayNetworking.send(new CycleTradePayload(cfg.showSuccessMessage, cfg.showWanderingTraderSuccessMessage));
+            }
+
+            villagercycle$keyWasDown = isKeyDown;
+        }
+    }
 }

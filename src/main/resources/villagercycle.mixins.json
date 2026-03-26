@@ -6,10 +6,7 @@
                 "MerchantScreenHandlerAccessor",
                 "MerchantEntityAccessor"
         ],
-        "client": [],
-        "server": [],
         "injectors": {
                 "defaultRequire": 1
-        },
-        "refmap": "villager-cycle-refmap.json"
+        }
 }

@@ -1,6 +1,6 @@
 # Villager Cycle
 
-A Quality of Life mod for Minecraft 1.21.11 Fabric that adds a button to villager trading screens, allowing you to refresh their trades before making any purchases.
+A Quality of Life mod for Minecraft Fabric that adds a button to villager trading screens, allowing you to refresh their trades before making any purchases.
 
 ## Features
 
@@ -18,10 +18,10 @@ A Quality of Life mod for Minecraft 1.21.11 Fabric that adds a button to village
 
 1. Download from [Releases](https://github.com/Partacus-SPQR/VillagerCycle/releases)
 2. Place `.jar` in your `.minecraft/mods` folder
-3. Required: **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.139.4+1.21.11+
-4. Recommended: **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149+ (enhanced config UI)
-5. Recommended: **[ModMenu](https://modrinth.com/mod/modmenu)** 17.0.0+ (in-game config access)
-6. Launch Minecraft 1.21.11 with Fabric Loader 0.18.2+
+3. Required: **[Fabric API](https://modrinth.com/mod/fabric-api)** (version matched to your MC version)
+4. Recommended: **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149+ (enhanced config UI, not available for MC 26.1)
+5. Recommended: **[ModMenu](https://modrinth.com/mod/modmenu)** 16.0.0+ (in-game config access)
+6. Launch Minecraft with Fabric Loader 0.18.4+
 
 ## How to Use
 
@@ -97,12 +97,12 @@ Success message toggles are client-side — each player controls their own prefe
 
 ## Technical Requirements
 
-- **Minecraft**: 1.21.11
-- **Fabric Loader**: 0.18.2+
-- **Java**: 21+
-- **Fabric API**: 0.139.4+1.21.11+ (required)
-- **Cloth Config**: 20.0.149+ (optional, recommended)
-- **ModMenu**: 17.0.0+ (optional, recommended)
+- **Minecraft**: 1.21.9, 1.21.10, 1.21.11, or 26.1
+- **Fabric Loader**: 0.18.4+
+- **Java**: 21+ (Java 25+ for MC 26.1)
+- **Fabric API**: Required (version matched to your MC version)
+- **Cloth Config**: Optional, recommended (not available for MC 26.1)
+- **ModMenu**: Optional, recommended
 
 ## License
 
