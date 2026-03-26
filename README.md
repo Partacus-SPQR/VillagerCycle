@@ -1,5 +1,10 @@
 # Villager Cycle
 
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.9--26.1-green)](https://minecraft.net)
+[![Fabric](https://img.shields.io/badge/Mod%20Loader-Fabric-blue)](https://fabricmc.net)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.4.0-orange)](https://github.com/Partacus-SPQR/VillagerCycle/releases)
+
 A Quality of Life mod for Minecraft Fabric that adds a button to villager trading screens, allowing you to refresh their trades before making any purchases.
 
 ## Features
