@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import com.villagercycle.compat.ScreenCompat;
 import org.lwjgl.glfw.GLFW;
 
 //? if >=26.1
@@ -397,7 +398,7 @@ public class ButtonDragScreen extends Screen {
         config.save();
 
         if (this.minecraft != null) {
-            this.minecraft.setScreen(parent);
+            ScreenCompat.open(this.minecraft, parent);
         }
     }
 

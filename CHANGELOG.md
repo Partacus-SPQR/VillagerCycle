@@ -2,6 +2,26 @@
 
 All notable changes to the Villager Cycle mod will be documented in this file.
 
+## [1.5.0] - 2026-06-23
+
+### Added
+- Minecraft 26.2 support (unobfuscated builds, Java 25)
+
+### Changed
+- 26.2 is now the primary build target; multi-version builds now cover 1.21.9, 1.21.10, 1.21.11, 26.1, and 26.2
+- Adapted to the 26.2 screen API change via a new `ScreenCompat` helper:
+  - `Minecraft.setScreen()` → `Minecraft.setScreenAndShow()`
+  - `Minecraft.screen` field → `Minecraft.gui.screen()`
+- Updated dependencies for 26.2: Fabric API 0.153.0+26.2, Mod Menu 20.0.0-beta.4
+
+### Fixed
+- **Cycle-limit sliders (fallback config screen)** could not reliably select **0 (Disabled)**: the slider's far-left mapped to `-1` (Unlimited), so setting villager or wandering-trader cycling to disabled silently did nothing — and a "disabled" wandering trader could still be cycled once at the default limit of 1. Sliders now order options as **Disabled (0) → 1…N → Unlimited (-1)**, so every value (especially Disabled) is reliably selectable. The Cloth Config screen was unaffected.
+- Wandering-trader cycle limit of `0` now reports a clear "cycling is disabled by the server" message, matching villager behavior.
+
+### Technical
+- Server-side networking, merchant accessors, and trade-cycle logic required no changes — they reuse the existing `>=26.1` Stonecutter conditionals
+- Screen API difference centralised in `ScreenCompat` (gated on `>=26.2`) so 1.21.x and 26.1 are unaffected
+
 ## [1.4.0] - 2026-03-25
 
 ### Added

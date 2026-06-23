@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.KeyEvent;
+import com.villagercycle.compat.ScreenCompat;
 //? if <26.1 {
 /*import net.minecraft.client.gui.GuiGraphics;*/
 //?} else {
@@ -75,8 +76,8 @@ public class SimpleFallbackConfigScreen extends Screen {
         private Button showSuccessMessageToggle;
         private Button showWanderingTraderSuccessMessageToggle;
         private Button allowWanderingTradersToggle;
-        private IntSlider wanderingTraderCycleLimitSlider;
-        private IntSlider villagerCycleLimitSlider;
+        private CycleLimitSlider wanderingTraderCycleLimitSlider;
+        private CycleLimitSlider villagerCycleLimitSlider;
         private IntSlider buttonWidthSlider;
         private IntSlider buttonHeightSlider;
         private IntSlider buttonOffsetXSlider;
@@ -247,9 +248,9 @@ public class SimpleFallbackConfigScreen extends Screen {
                         y += ROW_HEIGHT;
 
                         // === Wandering Trader Cycle Limit Slider (Operator Only) ===
-                        wanderingTraderCycleLimitSlider = new IntSlider(widgetX, y, WIDGET_WIDTH, 20,
+                        wanderingTraderCycleLimitSlider = new CycleLimitSlider(widgetX, y, WIDGET_WIDTH, 20,
                                 getCycleLimitText("Wandering Trader Limit", config.wanderingTraderCycleLimit),
-                                config.wanderingTraderCycleLimit, -1, 100) {
+                                config.wanderingTraderCycleLimit, 100) {
                                 @Override
                                 protected void updateMessage() {
                                         setMessage(getCycleLimitText("Wandering Trader Limit", getValue()));
@@ -271,7 +272,7 @@ public class SimpleFallbackConfigScreen extends Screen {
                         addTooltip(widgetX, y, WIDGET_WIDTH, 20, wanderingLimitTooltip.toArray(new Component[0]));
 
                         Button resetWanderingLimitBtn = Button.builder(Component.literal("\u21BA"), button -> {
-                                wanderingTraderCycleLimitSlider.setValue(1, -1, 100);
+                                wanderingTraderCycleLimitSlider.setCycleValue(1);
                                 config.wanderingTraderCycleLimit = 1;
                         }).bounds(resetX, y, RESET_BTN_WIDTH, 20).build();
                         addScrollableWidget(resetWanderingLimitBtn, y);
@@ -279,9 +280,9 @@ public class SimpleFallbackConfigScreen extends Screen {
                         y += ROW_HEIGHT;
 
                         // === Villager Cycle Limit Slider (Operator Only) ===
-                        villagerCycleLimitSlider = new IntSlider(widgetX, y, WIDGET_WIDTH, 20,
+                        villagerCycleLimitSlider = new CycleLimitSlider(widgetX, y, WIDGET_WIDTH, 20,
                                 getCycleLimitText("Villager Cycle Limit", config.villagerCycleLimit),
-                                config.villagerCycleLimit, -1, 100) {
+                                config.villagerCycleLimit, 100) {
                                 @Override
                                 protected void updateMessage() {
                                         setMessage(getCycleLimitText("Villager Cycle Limit", getValue()));
@@ -303,7 +304,7 @@ public class SimpleFallbackConfigScreen extends Screen {
                         addTooltip(widgetX, y, WIDGET_WIDTH, 20, villagerLimitTooltip.toArray(new Component[0]));
 
                         Button resetVillagerLimitBtn = Button.builder(Component.literal("\u21BA"), button -> {
-                                villagerCycleLimitSlider.setValue(-1, -1, 100);
+                                villagerCycleLimitSlider.setCycleValue(-1);
                                 config.villagerCycleLimit = -1;
                         }).bounds(resetX, y, RESET_BTN_WIDTH, 20).build();
                         addScrollableWidget(resetVillagerLimitBtn, y);
@@ -487,7 +488,7 @@ public class SimpleFallbackConfigScreen extends Screen {
                 // Key Binds button
                 Button keyBindsBtn = Button.builder(Component.literal("Key Binds"), button -> {
                         if (this.minecraft != null) {
-                                this.minecraft.setScreen(new KeyBindsScreen(this, this.minecraft.options));
+                                ScreenCompat.open(this.minecraft, new KeyBindsScreen(this, this.minecraft.options));
                         }
                 }).bounds(startX + buttonWidth + buttonSpacing, footerY, buttonWidth, 20).build();
                 this.addRenderableWidget(keyBindsBtn);
@@ -818,7 +819,7 @@ public class SimpleFallbackConfigScreen extends Screen {
         @Override
         public void onClose() {
                 if (this.minecraft != null) {
-                        this.minecraft.setScreen(parent);
+                        ScreenCompat.open(this.minecraft, parent);
                 }
         }
 
@@ -848,6 +849,35 @@ public class SimpleFallbackConfigScreen extends Screen {
 
                 public void setValue(int value, int min, int max) {
                         this.value = (double)(value - min) / (max - min);
+                        updateMessage();
+                }
+        }
+
+        // Slider for cycle limits with every option reliably selectable.
+        // Order left -> right: Disabled (0), 1, 2, ..., maxLimit, Unlimited (-1).
+        private abstract static class CycleLimitSlider extends AbstractSliderButton {
+                private final int maxLimit;
+
+                public CycleLimitSlider(int x, int y, int width, int height, Component text, int value, int maxLimit) {
+                        super(x, y, width, height, text, positionFor(value, maxLimit));
+                        this.maxLimit = maxLimit;
+                }
+
+                private static double positionFor(int value, int maxLimit) {
+                        int steps = maxLimit + 1;            // index range 0..steps
+                        int index = (value < 0) ? steps : Math.min(value, maxLimit);
+                        return (double) index / steps;
+                }
+
+                // Far-left = 0 (Disabled); far-right = Unlimited (-1); in between = 1..maxLimit.
+                public int getValue() {
+                        int steps = maxLimit + 1;
+                        int index = (int) Math.round(this.value * steps);
+                        return index >= steps ? -1 : index;
+                }
+
+                public void setCycleValue(int value) {
+                        this.value = positionFor(value, maxLimit);
                         updateMessage();
                 }
         }

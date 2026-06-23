@@ -10,7 +10,7 @@ repositories {
     maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
 }
 
-val isUnobfuscated = stonecutter.current.version == "26.1"
+val isUnobfuscated = stonecutter.current.version.startsWith("26.")
 
 // When disableObfuscation=true, Loom doesn't register mod* configurations or remap tasks.
 // Use standard Gradle configurations for unobfuscated versions.

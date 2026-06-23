@@ -127,6 +127,10 @@ UUID traderUuid = wanderingTrader.getUUID();
 
 // Check cycle limit (if not unlimited)
 int cycleLimit = config.wanderingTraderCycleLimit;
+if (cycleLimit == 0) {
+VillagerTradeUtil.sendCannotCycleMessage(player, "Wandering trader cycling is disabled by the server.");
+return;
+}
 if (cycleLimit >= 0) { // -1 means unlimited
 int currentCount = wanderingTraderCycleCounts.getOrDefault(traderUuid, 0);
 if (currentCount >= cycleLimit) {

@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;*/
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
+import com.villagercycle.compat.ScreenCompat;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,15 +115,15 @@ LOGGER.info("Cycle Trades button toggled: {}", config.enableCycleButton);
 
 // Open drag screen
 while (dragButtonKeyMapping.consumeClick()) {
-if (client.screen == null) {
-client.setScreen(new ButtonDragScreen(null));
+if (ScreenCompat.current(client) == null) {
+ScreenCompat.open(client, new ButtonDragScreen(null));
 }
 }
 
 // Open config screen
 while (openConfigKeyMapping.consumeClick()) {
-if (client.screen == null) {
-client.setScreen(ModMenuIntegration.getConfigScreen(null));
+if (ScreenCompat.current(client) == null) {
+ScreenCompat.open(client, ModMenuIntegration.getConfigScreen(null));
 }
 }
 
@@ -134,7 +135,7 @@ LOGGER.info("VillagerCycle config reloaded from file");
 
 // Cycle trades keybind - only works when in merchant screen
 while (cycleTradesKeyMapping.consumeClick()) {
-if (client.screen instanceof MerchantScreen) {
+if (ScreenCompat.current(client) instanceof MerchantScreen) {
 // Send cycle trade packet (same as clicking the button)
 VillagerCycleConfig cfg = VillagerCycleConfig.getInstance();
 ClientPlayNetworking.send(new CycleTradePayload(cfg.showSuccessMessage, cfg.showWanderingTraderSuccessMessage));
