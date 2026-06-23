@@ -1,9 +1,9 @@
 # Villager Cycle
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.9--26.1-green)](https://minecraft.net)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.9--26.2-green)](https://minecraft.net)
 [![Fabric](https://img.shields.io/badge/Mod%20Loader-Fabric-blue)](https://fabricmc.net)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.4.0-orange)](https://github.com/Partacus-SPQR/VillagerCycle/releases)
+[![Version](https://img.shields.io/badge/Version-1.5.0-orange)](https://github.com/Partacus-SPQR/VillagerCycle/releases)
 
 A Quality of Life mod for Minecraft Fabric that adds a button to villager trading screens, allowing you to refresh their trades before making any purchases.
 
@@ -24,7 +24,7 @@ A Quality of Life mod for Minecraft Fabric that adds a button to villager tradin
 1. Download from [Releases](https://github.com/Partacus-SPQR/VillagerCycle/releases)
 2. Place `.jar` in your `.minecraft/mods` folder
 3. Required: **[Fabric API](https://modrinth.com/mod/fabric-api)** (version matched to your MC version)
-4. Recommended: **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149+ (enhanced config UI, not available for MC 26.1)
+4. Recommended: **[Cloth Config](https://modrinth.com/mod/cloth-config)** 20.0.149+ (enhanced config UI, not available for MC 26.x)
 5. Recommended: **[ModMenu](https://modrinth.com/mod/modmenu)** 16.0.0+ (in-game config access)
 6. Launch Minecraft with Fabric Loader 0.18.4+
 
@@ -64,8 +64,8 @@ A Quality of Life mod for Minecraft Fabric that adds a button to villager tradin
 | `showSuccessMessage` | `true` | Show villager cycle success message (client-side) |
 | `showWanderingTraderSuccessMessage` | `true` | Show wandering trader success message (client-side) |
 | `allowWanderingTraders` | `false` | Enable wandering trader cycling (**operator only** on servers) |
-| `villagerCycleLimit` | `-1` | Max cycles per villager: -1=unlimited (**operator only** on servers) |
-| `wanderingTraderCycleLimit` | `1` | Max cycles per wandering trader: -1=unlimited (**operator only** on servers) |
+| `villagerCycleLimit` | `-1` | Max cycles per villager: -1=unlimited, 0=disabled, 1+=limited (**operator only** on servers) |
+| `wanderingTraderCycleLimit` | `1` | Max cycles per wandering trader: -1=unlimited, 0=disabled, 1+=limited (**operator only** on servers) |
 | `buttonOffsetX/Y` | `6`/`-25` | Button position offset from GUI |
 | `buttonWidth/Height` | `100`/`20` | Button dimensions (pixels) |
 
@@ -102,11 +102,11 @@ Success message toggles are client-side — each player controls their own prefe
 
 ## Technical Requirements
 
-- **Minecraft**: 1.21.9, 1.21.10, 1.21.11, or 26.1
+- **Minecraft**: 1.21.9, 1.21.10, 1.21.11, 26.1, or 26.2
 - **Fabric Loader**: 0.18.4+
-- **Java**: 21+ (Java 25+ for MC 26.1)
+- **Java**: 21+ (Java 25+ for MC 26.x)
 - **Fabric API**: Required (version matched to your MC version)
-- **Cloth Config**: Optional, recommended (not available for MC 26.1)
+- **Cloth Config**: Optional, recommended (not available for MC 26.x)
 - **ModMenu**: Optional, recommended
 
 ## License
